@@ -1,0 +1,21 @@
+version: '3'
+services:
+  ui:
+    build: ./src/ui
+    volumes:
+      - ./src/ui:/ui
+      - /ui/node_modules
+    ports:
+      - 3000:3000
+    container_name: mvw_ui
+    depends_on:
+      - api
+  api:
+    build: ./src/api
+    volumes:
+      - ./src/api:/api
+      - /api/node_modules
+    ports:
+      - 8000:8000
+    container_name: mvw_api
+   

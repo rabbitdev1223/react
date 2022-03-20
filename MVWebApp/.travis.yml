@@ -1,0 +1,6 @@
+before_script:
+  - cd src/ui
+  - npm install
+language: node_js
+node_js:
+- "11"

@@ -1,0 +1,13 @@
+{
+  "name": "mvwebapp",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "debug": "~2.6.9",
+    "express": "4.16.4",
+    "http-errors": "1.6.2",
+    "jsonwebtoken": "8.4.0",
+    "morgan": "1.9.1"
+  }
+}
