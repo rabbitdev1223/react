@@ -214,9 +214,12 @@ function Home() {
                     </ul>
                 </div>
             </nav>
-            <CanvasJSChart options = {options} 
-                onRef={ref => chart = ref}
-            />
+
+            <div style = {{marginTop:150}}>
+                <CanvasJSChart options = {options} 
+                    onRef={ref => chart = ref}
+                />
+            </div>
     </div>
     )
 }
