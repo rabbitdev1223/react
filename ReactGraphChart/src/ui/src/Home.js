@@ -1,4 +1,4 @@
-import React, {Component, useEffect} from 'react';
+import React, { useEffect} from 'react';
 import axios from 'axios'
 import CanvasJSReact from './assets/canvasjs.react';
 
@@ -19,13 +19,13 @@ function Home() {
         var minute  = now.getMinutes();
         var second  = now.getSeconds(); 
         
-        if(hour.toString().length == 1) {
+        if(hour.toString().length === 1) {
             hour = '0'+hour;
         }
-        if(minute.toString().length == 1) {
+        if(minute.toString().length === 1) {
             minute = '0'+minute;
         }
-        if(second.toString().length == 1) {
+        if(second.toString().length === 1) {
             second = '0'+second;
         }   
         var time = hour+':'+minute+':'+second;   
@@ -40,7 +40,7 @@ function Home() {
 
             currentTime.setSeconds(currentTime.getSeconds() + 1);
             var timeStr = getTime( currentTime);
-            console.log(timeStr);
+            
             dps1.push({
                 x: i,
                 y: null,
@@ -184,9 +184,9 @@ function Home() {
         initalizeChart();
         const interval = setInterval(()=>{
             axios.get('/users/getData').then(loadedData).catch(errorLoading);
-        },1000)
-       
-    })
+        },1000);
+        return () => clearInterval(interval);
+    },[])
 
     const options = {
         
@@ -219,7 +219,6 @@ function Home() {
             />
     </div>
     )
-      
 
 }
 

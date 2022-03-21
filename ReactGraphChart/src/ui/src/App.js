@@ -1,5 +1,6 @@
-import React, {Component, useEffect} from 'react';
-import {Route, Switch, Redirect, Link} from "react-router-dom";
+import React, {useEffect,useState} from 'react';
+import { useHistory } from 'react-router';
+import {Route, Switch, Redirect} from "react-router-dom";
 import Login from "./Login";
 import AuthStore from "./AuthStore";
 import Home from "./Home";
@@ -7,16 +8,23 @@ import axios from "axios/index";
 
 
 function App() {
+    
+    const [update,setUpdate] = useState(false);
+    const history = useHistory()
 
     const logout = (event) => {
         event.preventDefault();
         AuthStore.removeToken();
+        // history.push('/');
+        setUpdate(true);
         
     };
     
     useEffect(() => {
         axios.defaults.timeout = 10000;
         axios.defaults.headers.common['Authorization'] = `Bearer ${AuthStore.getToken()}`;
+        
+
     });
 
     const PrivateRoute = ({component: Component, ...rest})=> {
@@ -34,11 +42,11 @@ function App() {
     return (
         <div className='h-100'>
             <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-                <div className="navbar-brand">MVWebApp</div>
+                <div className="navbar-brand">RampUp</div>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item active">
-                            <Link to="/" className="nav-link">Home</Link>
+                            &nbsp;
                         </li>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
