@@ -1,33 +1,19 @@
-import React, {Component} from 'react';
-import UserService from "./UserService";
+import React, {Component, useEffect} from 'react';
 import axios from 'axios'
 import CanvasJSReact from './assets/canvasjs.react';
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-var startTime = 0, endTime = 0;
-var dps1 = [];
-var dps2 = [];
 
-var dataLength = 4*3*60; // number of dataPoints visible at any point
-var xVal = dataLength/4 ;
-class Home extends Component {
+function Home() { 
 
-   
-    constructor(props) {
-        super(props);
-        this.state = {loading: true, errorMessage: undefined}
-    }
+    let chart;
 
-    getCreatedDateString = (createdTimestamp) => {
-        return new Date(createdTimestamp).toLocaleDateString('en-US', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric'
-        });
-    };
+    const CanvasJSChart = CanvasJSReact.CanvasJSChart;
+    let dps1 = [];
+    let dps2 = [];
 
-    
-    getTime = (date)=> {
+    let dataLength = 4*3*60; // number of dataPoints visible at any point
+    let xVal = dataLength/4 ;
+
+    const getTime = (date)=> {
         var now     = date; 
         var hour    = now.getHours();
         var minute  = now.getMinutes();
@@ -46,14 +32,14 @@ class Home extends Component {
         return time;
     }
 
-    initalizeChart = ()=>{
+    const initalizeChart = ()=>{
         var currentTime = new Date();
         currentTime.setSeconds(currentTime.getSeconds() - dataLength/4);
         
         for(var i=0;i<dataLength/4;i++){
 
             currentTime.setSeconds(currentTime.getSeconds() + 1);
-            var timeStr = this.getTime( currentTime);
+            var timeStr = getTime( currentTime);
             console.log(timeStr);
             dps1.push({
                 x: i,
@@ -106,12 +92,12 @@ class Home extends Component {
         }
 
       
-           this.chart.render();
+           chart.render();
     }
-    updateChart = (data) => {
+    const updateChart = (data) => {
 
      
-        var timeStr = this.getTime(new Date());
+        var timeStr = getTime(new Date());
           
         dps1.push({
             x: xVal,
@@ -177,85 +163,64 @@ class Home extends Component {
         }
         
       
-        this.chart.render();
+        chart.render();
     };
 
-    loadedData = (response) => {
+    const loadedData = (response) => {
         
         
         if (response.status === 200) {
                 
-            this.updateChart(response.data);
+            updateChart(response.data);
             
         } 
     };
+    
+    const errorLoading = (err) => {
 
-    errorLoading = (err) => {
-        this.setState({loading: false, errorMessage: 'There was an error loading your account.'});
     };
 
-    
-
-    componentDidMount() {
-
-        
-        this.initalizeChart();
-        this.interval = setInterval(()=>{
-            axios.get('/users/getData').then(this.loadedData).catch(this.errorLoading);
+    useEffect(()=>{
+        initalizeChart();
+        const interval = setInterval(()=>{
+            axios.get('/users/getData').then(loadedData).catch(errorLoading);
         },1000)
        
-       
-    }
+    })
 
-    render() {
-
-		
-		const spanStyle = {
-			position:'absolute', 
-			top: '10px',
-			fontSize: '20px', 
-			fontWeight: 'bold', 
-			backgroundColor: '#d85757',
-			padding: '0px 4px',
-			color: '#ffffff'
-		}
-		
-		const options = {
-			
-			animationEnabled: true,
-			title: {
-				text: "Try Zooming - Panning"
-			},
-            
-			data: [{
-                type: "spline",
-                name: "2016",
-                showInLegend: true,
-                dataPoints: 
-                    dps1
+    const options = {
         
-            },
-            {
-                type: "spline",
-                name: "2017",
-                showInLegend: true,
-                dataPoints: 
-                    dps2
-            }]
-		}
-		
-		startTime = new Date();
-
-     
-        return (
-            <div>
-                <CanvasJSChart options = {options} 
-                    onRef={ref => this.chart = ref}
-                />
-        </div>
-        )
-      
+        animationEnabled: true,
+        title: {
+            text: "Try Zooming - Panning"
+        },
+        
+        data: [{
+            type: "spline",
+            name: "2016",
+            showInLegend: true,
+            dataPoints: 
+                dps1
+    
+        },
+        {
+            type: "spline",
+            name: "2017",
+            showInLegend: true,
+            dataPoints: 
+                dps2
+        }]
     }
+
+    return (
+        <div>
+            <CanvasJSChart options = {options} 
+                onRef={ref => chart = ref}
+            />
+    </div>
+    )
+      
+
 }
 
 export default Home;
