@@ -1,33 +1,26 @@
 import React, {useEffect} from 'react';
-
 import {Route, Switch, Redirect} from "react-router-dom";
-import Login from "./Login";
-import AuthStore from "./AuthStore";
-import Home from "./Home";
 import axios from "axios/index";
-
+import Login from "./components/Login";
+import AuthStore from "./store/AuthStore";
+import Home from "./components/Home";
 
 function App() {
-    
 
     useEffect(() => {
         axios.defaults.timeout = 10000;
-        axios.defaults.headers.common['Authorization'] = `Bearer ${AuthStore.getToken()}`;
-        
-
+        axios.defaults.headers.common['Authorization'] = `Bearer ${AuthStore.getToken()}`;      
     });
 
     const PrivateRoute = ({component: Component, ...rest})=> {
         return (
             <Route
                 {...rest}
-                render={(props) => AuthStore.isLoggedIn()
-                    ? <Component {...props}/>
+                render={(props) => AuthStore.isLoggedIn()? 
+                    <Component {...props}/>
                     : <Redirect to={{pathname: '/login'}}/>}/>
         );
     }
-
-   
 
     return (
         <div className='h-100'>
@@ -42,11 +35,8 @@ function App() {
                 </Switch>
 
             </div>
-
-            
         </div>
     );
-
 }
 
 export default App;

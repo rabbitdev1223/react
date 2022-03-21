@@ -1,15 +1,12 @@
 import React, {useState} from 'react';
-import AuthStore from "./AuthStore";
-import UserService from "./UserService";
 import { useHistory } from 'react-router';
+import AuthStore from "../store/AuthStore";
+import UserService from "../services/UserService";
 
 function Login()  {
 
     const loginError = 'Error logging in. Try again later.';
     const history = useHistory()
-    
-    // const [username,setUserName] = useState("")
-    // const [password,setPassword] = useState("")
     const [loading,setLoading] = useState(false)
     const [errorMessage,setErrorMessage] = useState(undefined)
 
@@ -21,23 +18,19 @@ function Login()  {
     const handleLoginResponse = (response) => {
         if (response.data && response.data.token) {
             AuthStore.saveToken(response.data.token);
-
-            if (history.location.pathname !== '/')
-                history.push('/');
-
-
-        } else {
+            history.push('/');
+        } 
+        else {
             setLoading(false)
-            setErrorMessage(loginError)
-            
+            setErrorMessage(loginError)    
         }
     };
 
     const handleLoginError = (err) => {
+
         if (err.response && err.response.status === 400){
             setLoading(false)
             setErrorMessage(err.response.data.message)
-            
         }
         else{
             setLoading(false)
@@ -46,6 +39,7 @@ function Login()  {
     };
 
     const login = (event) => {
+        
         event.preventDefault();
         setLoading(true)
         
@@ -71,7 +65,6 @@ function Login()  {
     const errorMessageDiv = errorMessage &&
         <div className="text-danger mb-2">{errorMessage}</div>;
 
-
     return (
         <div className="d-flex flex-column h-100 align-items-center justify-content-center">
             {loadingDiv}
@@ -89,7 +82,6 @@ function Login()  {
             </form>
         </div>
     );
-
 }
 
 export default Login;

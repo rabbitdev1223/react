@@ -1,6 +1,7 @@
 import axios from "axios/index";
 
 class AuthStore {
+    
     static TOKEN_NAME = 'token';
 
     static isLoggedIn() {
