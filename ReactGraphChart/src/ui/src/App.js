@@ -4,6 +4,7 @@ import Login from "./Login";
 import AuthStore from "./AuthStore";
 import Home from "./Home";
 import axios from "axios/index";
+import { withCookies } from "react-cookie";
 
 class App extends Component {
 
@@ -18,7 +19,10 @@ class App extends Component {
         axios.defaults.headers.common['Authorization'] = `Bearer ${AuthStore.getToken()}`;
     }
 
+    
     render() {
+
+
         function PrivateRoute({component: Component, ...rest}) {
             return (
                 <Route
@@ -57,9 +61,11 @@ class App extends Component {
                     </Switch>
 
                 </div>
+
+                
             </div>
         );
     }
 }
 
-export default App;
+export default withCookies(App);

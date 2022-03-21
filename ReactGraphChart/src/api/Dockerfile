@@ -2,6 +2,7 @@ FROM node:11-alpine
 
 WORKDIR /api
 
+ENV TOKEN_SECRET=supersecret
 
 COPY package.json ./
 COPY package-lock.json ./

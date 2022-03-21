@@ -19,6 +19,10 @@ class UserService {
     static loadCurrentUser(successCallback, errorCallback) {
         axios.get('/users/me').then(successCallback).catch(errorCallback);
     }
+
+    static loadData(successCallback, errorCallback) {
+        axios.get('/users/getData').then(successCallback).catch(errorCallback);
+    }
 }
 
 export default UserService;
