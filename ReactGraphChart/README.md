@@ -3,11 +3,9 @@
 A simple single page application with user creation and login using the power of:
 
 
-![Demo](img/mvw.gif)
-
 Secured with JWTs this application allows a user to
 * Login with that account
-* See a single chart on login
+* See a single chart on login 
 * Logout
 
 
