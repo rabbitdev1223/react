@@ -7,10 +7,9 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var startTime = 0, endTime = 0;
 var dps1 = [];
 var dps2 = [];
-var xVal = 0;
 
 var dataLength = 4*3*60; // number of dataPoints visible at any point
-
+var xVal = dataLength/4 ;
 class Home extends Component {
 
    
@@ -49,7 +48,7 @@ class Home extends Component {
 
     initalizeChart = ()=>{
         var currentTime = new Date();
-        
+        currentTime.setSeconds(currentTime.getSeconds() - dataLength/4);
         
         for(var i=0;i<dataLength/4;i++){
 
