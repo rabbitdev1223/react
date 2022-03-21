@@ -1,9 +1,11 @@
 import React, { useEffect} from 'react';
+import { useHistory } from 'react-router';
 import axios from 'axios'
 import CanvasJSReact from './assets/canvasjs.react';
-
+import AuthStore from "./AuthStore";
 function Home() { 
 
+    const history = useHistory()
     let chart;
 
     const CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -179,6 +181,14 @@ function Home() {
     const errorLoading = (err) => {
 
     };
+    const logout = (event) => {
+        event.preventDefault();
+        AuthStore.removeToken();
+        
+        history.push('/login');
+        // setUpdate(true);
+        
+    };
 
     useEffect(()=>{
         initalizeChart();
@@ -197,7 +207,7 @@ function Home() {
         
         data: [{
             type: "spline",
-            name: "2016",
+            name: "Turtle",
             showInLegend: true,
             dataPoints: 
                 dps1
@@ -205,15 +215,31 @@ function Home() {
         },
         {
             type: "spline",
-            name: "2017",
+            name: "Rabbit",
             showInLegend: true,
             dataPoints: 
                 dps2
         }]
     }
-
+    const logoutBtn = <button className="link-button nav-link" onClick={logout}> Logout</button>;
     return (
         <div>
+            <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+                <div className="navbar-brand">RampUp</div>
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav mr-auto">
+                        <li className="nav-item active">
+                            &nbsp;
+                        </li>
+                    </ul>
+                    <ul className="nav navbar-nav navbar-right">
+                        <li className="nav-item active">
+                            {AuthStore.isLoggedIn() && logoutBtn}
+                        </li>
+                    </ul>
+
+                </div>
+            </nav>
             <CanvasJSChart options = {options} 
                 onRef={ref => chart = ref}
             />

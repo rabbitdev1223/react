@@ -1,86 +1,95 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import AuthStore from "./AuthStore";
 import UserService from "./UserService";
+import { useHistory } from 'react-router';
 
-class Login extends Component {
+function Login()  {
 
-    loginError = 'Error logging in. Try again later.';
+    const loginError = 'Error logging in. Try again later.';
+    const history = useHistory()
+    
+    // const [username,setUserName] = useState("")
+    // const [password,setPassword] = useState("")
+    const [loading,setLoading] = useState(false)
+    const [errorMessage,setErrorMessage] = useState(undefined)
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: '',
-            password: '',
-            loading: false,
-            errorMessage: undefined
-        };
-    }
+    const [user,setUser] = useState({
+        username:"",
+        password:""
+    })
 
-    handleLoginResponse = (response) => {
+    const handleLoginResponse = (response) => {
         if (response.data && response.data.token) {
             AuthStore.saveToken(response.data.token);
-            this.props.history.push("/")
+
+            if (history.location.pathname !== '/')
+                history.push('/');
+
+
         } else {
-            this.setState({loading: false, errorMessage: this.loginError});
+            setLoading(false)
+            setErrorMessage(loginError)
+            
         }
     };
 
-    handleLoginError = (err) => {
-        if (err.response && err.response.status === 400)
-            this.setState({loading: false, errorMessage: err.response.data.message});
-        else
-            this.setState({loading: false, errorMessage: this.loginError});
+    const handleLoginError = (err) => {
+        if (err.response && err.response.status === 400){
+            setLoading(false)
+            setErrorMessage(err.response.data.message)
+            
+        }
+        else{
+            setLoading(false)
+            setErrorMessage(loginError)
+        }
     };
 
-    login = (event) => {
+    const login = (event) => {
         event.preventDefault();
-        this.setState({loading: true});
-        UserService.login(this.state.username,
-            this.state.password,
-            this.handleLoginResponse,
-            this.handleLoginError);
+        setLoading(true)
+        
+        UserService.login(user.username,
+            user.password,
+            handleLoginResponse,
+            handleLoginError);
     };
 
-    handleChange = (event) => {
-        this.setState({
+    const handleChange = (event) => {
+        
+        setUser({
+            ...user,
             [event.target.id]: event.target.value
         });
     };
 
-    createAccount = (event) => {
-        event.preventDefault();
-        this.props.history.push("/create");
-    };
+    const loadingDiv = loading &&
+        <div className="d-flex align-items-center justify-content-center overlay">
+            <div className="spinner-border text-primary" role="status"/>
+        </div>;
 
-    render() {
-        const loadingDiv = this.state.loading &&
-            <div className="d-flex align-items-center justify-content-center overlay">
-                <div className="spinner-border text-primary" role="status"/>
-            </div>;
+    const errorMessageDiv = errorMessage &&
+        <div className="text-danger mb-2">{errorMessage}</div>;
 
-        const errorMessageDiv = this.state.errorMessage &&
-            <div className="text-danger mb-2">{this.state.errorMessage}</div>;
 
-        const createButton = <button className="link-button" onClick={this.createAccount}>Create one.</button>;
+    return (
+        <div className="d-flex flex-column h-100 align-items-center justify-content-center">
+            {loadingDiv}
+            <form className="flex-column w-25">
+                <h1 className="h3 mb-3 font-weight-normal">Log in</h1>
+                {errorMessageDiv}
+                <input autoComplete="off" type="username" id="username" className="form-control mb-3"
+                        placeholder="Username" value={user.username} onChange={handleChange}/>
+                <input type="password" id="password" className="form-control mb-3" placeholder="Password"
+                        value={user.password} onChange={handleChange}/>
+                <button className="btn btn-lg btn-primary btn-block" type="submit" onClick={login}>
+                    Sign in
+                </button>
+                
+            </form>
+        </div>
+    );
 
-        return (
-            <div className="d-flex flex-column h-100 align-items-center justify-content-center">
-                {loadingDiv}
-                <form className="flex-column w-25">
-                    <h1 className="h3 mb-3 font-weight-normal">Log in</h1>
-                    {errorMessageDiv}
-                    <input autoComplete="off" type="username" id="username" className="form-control mb-3"
-                           placeholder="Username" value={this.state.username} onChange={this.handleChange}/>
-                    <input type="password" id="password" className="form-control mb-3" placeholder="Password"
-                           value={this.state.password} onChange={this.handleChange}/>
-                    <button className="btn btn-lg btn-primary btn-block" type="submit" onClick={this.login}>
-                        Sign in
-                    </button>
-                    <p className="mt-3 text-center">Don't have an account? {createButton}</p>
-                </form>
-            </div>
-        );
-    }
 }
 
 export default Login;
